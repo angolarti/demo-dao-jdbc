@@ -8,11 +8,13 @@ import java.util.List;
 
 import db.DBException;
 import models.dao.SellerDao;
+import models.dto.SellerDto;
 import models.entities.Department;
 import models.entities.Seller;
 
 public class SellerDaoJDBC implements SellerDao {
 
+	private static final String ResultSet = null;
 	private Connection conn;
 
 	public SellerDaoJDBC(Connection conn) {
@@ -47,11 +49,8 @@ public class SellerDaoJDBC implements SellerDao {
 			pstmt.setInt(1, id);
 			rs = pstmt.executeQuery();
 			if (rs.next()) {
-				Department department = new Department(rs.getInt("DepartmentId"), rs.getString("DepName"));
-	
-				Seller seller = new Seller(
-						rs.getInt("Id"), rs.getString("Name"), rs.getString("Email"), rs.getDate("BirthDate"), 
-						rs.getDouble("BaseSalary"), department);
+				Department department = SellerDto.instantiateDepartment(rs);
+				Seller seller = SellerDto.instantiateSeller(rs, department);
 				return seller;
 			}
 			return null;
